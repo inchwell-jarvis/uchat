@@ -1,8 +1,45 @@
-*{
-    padding: 0;
-    margin: 0;
+* {
+  padding: 0;
+  margin: 0;
 }
-html,body,#app{
-    width: 100%;
-    height: 100%;
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  font: 14px/1.5 Arial, Microsoft Yahei, Hiragino Sans GB, Heiti SC,
+    WenQuanYi Micro Hei, sans-serif;
+}
+
+@font-face {
+  /* 重命名字体名  英文字体 */
+  font-family: "Mooli";
+  /* 引入字体 */
+  src: url("./assets/ttf/Mooli-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+//这是滚动条的根元素，你在这里定义滚动条的宽度和高度。
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+// 这是滚动条轨道的样式，用于设置滚动条的背景和轨道的形状。
+::-webkit-scrollbar-track {
+  background: rgba(239, 239, 239, 0.416);
+  border-radius: 2px;
+}
+// 这是滚动条的拇指（滚动条的滑块）的样式，你在这里定义滚动条拇指的背景和形状。
+::-webkit-scrollbar-thumb {
+  background: #bfbfbf;
+  border-radius: 10px;
+}
+/* 鼠标悬停时的滚动按钮样式 */
+::-webkit-scrollbar-thumb:hover {
+  background: #666; /* 鼠标悬停时的颜色 */
+}
+// 这是滚动条的角落的样式，你在这里定义角落的背景颜色。
+::-webkit-scrollbar-corner {
+  background: #bfbfbf;
 }

@@ -1,8 +1,27 @@
 <template>
-    <div class='box'>
-        SCSS
+    <div class='page'>
 
-        <el-row>
+        <div :class="page_name">
+            <div class="page_box_left">
+                <img src="../../assets/images/logo.png" alt="">
+            </div>
+            <div class="page_box_right">
+                <p class="title">UChat</p>
+                <br>
+                <p class="start">开始你的第一次对话</p>
+                <br><br><br><br><br>
+                <p class="choose">选择身份 开始对话</p>
+                <br>
+                <div class="optionalIdentity">
+                    <div class="identity" @click="path()"><img src="../../assets/images/avatar1.png" alt=""></div>
+                    <div class="identity" @click="path()"><img src="../../assets/images/avatar2.png" alt=""></div>
+                    <div class="identity" @click="path()"><img src="../../assets/images/avatar3.png" alt=""></div>
+                    <div class="identity" @click="path()"><img src="../../assets/images/avatar4.png" alt=""></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <el-row>
             <el-button>默认按钮</el-button>
             <el-button type="primary">主要按钮</el-button>
             <el-button type="success">成功按钮</el-button>
@@ -11,7 +30,7 @@
             <el-button type="danger">危险按钮</el-button>
         </el-row>
 
-        <img src="../../assets/images/logo.png" alt="" style="width: 500px;">
+        <img src="../../assets/images/logo.png" alt="" style="width: 500px;"> -->
     </div>
 </template>
 
@@ -21,7 +40,7 @@ export default {
     // 定义属性
     data() {
         return {
-
+            page_name: 'page_box'
         }
     },
     // 生命周期 - 创建完成（可以访问当前this实例）
@@ -39,7 +58,14 @@ export default {
     watch: {},
     // 方法集合
     methods: {
-
+        path() {
+            this.page_name = 'page_box animate__animated animate__bounceOut'
+            setTimeout(() => {
+                this.$router.push({
+                    path: 'home'
+                })
+            }, 1000);
+        }
     },
     beforeCreate() { }, // 生命周期 - 创建之前
     beforeMount() { }, // 生命周期 - 挂载之前
@@ -52,9 +78,86 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.box {
+
+.page {
     width: 100%;
     height: 100%;
-    background: #e3dede;
+    background: #ffffff;
+    .page_box {
+        width: 1000px;
+        height: 500px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        .page_box_left,
+        .page_box_right {
+            width: 50%;
+            height: 100%;
+            float: left;
+            // border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .page_box_left {
+            padding: 50px;
+            box-sizing: border-box;
+            img {
+                width: 400px;
+                height: 400px;
+            }
+        }
+        .page_box_right {
+            .title {
+                font-size: 100px;
+                font-family: 'Mooli';
+                font-weight: 700;
+                background-image: linear-gradient(
+                    to top,
+                    #d08f5f 0%,
+                    #f9773f 100%
+                );
+                -webkit-background-clip: text;
+                -moz-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+            .start {
+                font-size: 30px;
+            }
+            .choose {
+                color: rgb(56, 131, 247);
+                font-weight: bold;
+            }
+            .optionalIdentity {
+                width: 100%;
+                height: 100px;
+                .identity {
+                    width: 100px;
+                    height: 100px;
+                    float: left;
+                    border-radius: 20px;
+                    margin-right: 10px;
+                    cursor: pointer;
+                    -webkit-user-select: none;
+                    user-select: none;
+                    box-sizing: border-box;
+                    padding: 10px;
+                    background: #3883f7;
+                    filter: grayscale(100%);
+                    img {
+                        width: 100%;
+                        pointer-events: none;
+                        -webkit-user-select: none;
+                        user-select: none;
+                    }
+                }
+                .identity:hover {
+                    filter: grayscale(0%);
+                }
+            }
+        }
+    }
 }
 </style>
