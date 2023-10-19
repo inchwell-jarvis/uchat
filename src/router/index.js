@@ -18,6 +18,8 @@ export default new Router({
         { path: '/index', name: 'index ', component: resolve => require(['@/views/home/pages/index'], resolve), },
         { path: '/chat', name: 'chat ', component: resolve => require(['@/views/home/pages/chat'], resolve), },
         { path: '/app', name: 'app ', component: resolve => require(['@/views/home/pages/app'], resolve), },
+        { path: '/api', name: 'api ', component: resolve => require(['@/views/home/pages/api'], resolve), },
+        { path: '/permission', name: 'permission ', component: resolve => require(['@/views/home/pages/permission'], resolve), },
       ]
     },
   ]

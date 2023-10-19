@@ -55,6 +55,20 @@ export default {
                     start_icon: require('../../assets/menu/app-start.png'),
                     close_icon: require('../../assets/menu/app-close.png'),
                 }
+                ,
+                {
+                    name: '接口',
+                    path: '/api',
+                    start_icon: require('../../assets/menu/api-start.png'),
+                    close_icon: require('../../assets/menu/api-close.png'),
+                }
+                ,
+                {
+                    name: '权限',
+                    path: '/permission',
+                    start_icon: require('../../assets/menu/permission-start.png'),
+                    close_icon: require('../../assets/menu/permission-close.png'),
+                }
             ],
             exit: [
                 {

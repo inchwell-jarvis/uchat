@@ -1,25 +1,32 @@
 <template>
     <div class='chat'>
+        <!-- 头像 -->
+        <div class="avatar"></div>
+
         <div class="chat_home">
             <div class="chat_content" ref="scrollContainer">
                 <!-- 别人的消息 -->
                 <!-- 我的消息 -->
-                <div class="my_msg animate__animated animate__fadeIn" v-for="(item,index) in msgData" :key="index">
-                    <div class="my_avatar">
-                        <img src="../../../assets/images/avatar1.png" alt="">
-                    </div>
-                    <div class="message">
-                        <span>{{item.message}}</span>
-                    </div>
-                </div>
+                <div  v-for="(item,index) in msgData" :key="index">
 
-                <div class="my_msg you_msg animate__animated animate__fadeIn" v-for="(item,index) in msgData" :key="index">
-                    <div class="my_avatar">
-                        <img src="../../../assets/images/avatar1.png" alt="">
+                    <div class="my_msg animate__animated animate__fadeIn" v-if="item.role == role && item.type == 'text' ">
+                        <div class="my_avatar">
+                            <img src="../../../assets/images/avatar1.png" alt="">
+                        </div>
+                        <div class="message">
+                            <span>{{item.message}}</span>
+                        </div>
                     </div>
-                    <div class="message">
-                        <span>{{item.message}}</span>
+
+                    <div class="my_msg you_msg animate__animated animate__fadeIn" v-if="item.role != role && item.type == 'text'">
+                        <div class="my_avatar">
+                            <img src="../../../assets/images/avatar1.png" alt="">
+                        </div>
+                        <div class="message">
+                            <span>{{item.message}}</span>
+                        </div>
                     </div>
+
                 </div>
 
             </div>
@@ -48,12 +55,13 @@ export default {
             sendClose: require('../../../assets/send/send-close.png'),
             sendStart: require('../../../assets/send/send-start.png'),
             socket: null,
-            msgData: []
+            msgData: [],
+            role: this.$store.state.role
         }
     },
     // 生命周期 - 创建完成（可以访问当前this实例）
     created() {
-
+        console.log(this.$store.state.role)
         // 在Vue组件中访问WebSocket连接
         this.$socket.send(JSON.stringify({ type: "system", value: '获取历史记录' }))
     },
@@ -83,7 +91,7 @@ export default {
         // this.$socket.onerror(error): 为WebSocket连接发生错误时添加回调函数。
 
         Send() {
-            this.$socket.send(JSON.stringify({ type: "info", value: this.inputValue }))
+            this.$socket.send(JSON.stringify({ type: "info", value: this.inputValue, role: this.role }))
             this.inputValue = ''
         },
 
@@ -108,6 +116,23 @@ export default {
 .chat {
     width: 100%;
     height: 100%;
+    position: relative;
+
+    .avatar {
+        width: 300px;
+        height: 70px;
+        position: absolute;
+        border: 1px solid #ccc;
+        background: #ffffff;
+        top: 0;
+        right: -230px;
+        cursor: pointer;
+        transition: 0.4s;
+        box-sizing: border-box;
+    }
+    .avatar:hover {
+        right: 0px;
+    }
     .chat_home {
         width: 1200px;
         height: 100%;
@@ -141,7 +166,7 @@ export default {
                     padding: 10px;
                     box-sizing: border-box;
                     line-height: 30px;
-                    span{
+                    span {
                         float: right;
                     }
                 }
@@ -151,9 +176,9 @@ export default {
                     float: right;
                     padding: 5px;
                     box-sizing: border-box;
-                    background: #FFFFFF;
+                    background: #ffffff;
                     border-radius: 6px;
-                    img{
+                    img {
                         width: 40px;
                         height: 40px;
                     }
@@ -161,17 +186,17 @@ export default {
             }
 
             // 别人的消息
-            .you_msg{
+            .you_msg {
                 padding-left: 0px;
                 padding-right: 50px;
-                .message{
+                .message {
                     float: left;
                     margin-right: 0px;
                     margin-left: 10px;
                     background: #ffffff;
                     line-height: 30px;
                 }
-                .my_avatar{
+                .my_avatar {
                     float: left;
                 }
             }

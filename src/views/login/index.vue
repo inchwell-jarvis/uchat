@@ -13,10 +13,10 @@
                 <p class="choose">选择身份 开始对话</p>
                 <br>
                 <div class="optionalIdentity">
-                    <div class="identity" @click="path()"><img src="../../assets/images/avatar1.png" alt=""></div>
-                    <div class="identity" @click="path()"><img src="../../assets/images/avatar2.png" alt=""></div>
-                    <div class="identity" @click="path()"><img src="../../assets/images/avatar3.png" alt=""></div>
-                    <div class="identity" @click="path()"><img src="../../assets/images/avatar4.png" alt=""></div>
+                    <div class="identity" @click="path('1d6e38ca-4c57-4b16-94c4-74a52b1c9d0d')"><img src="../../assets/images/avatar1.png" alt=""></div>
+                    <div class="identity" @click="path('cd23e6bc-6f06-4b9d-89cf-2a1c0a16a5f7')"><img src="../../assets/images/avatar2.png" alt=""></div>
+                    <div class="identity" @click="path('a4eaf508-9d5d-4b02-ae78-187c48a4b21e')"><img src="../../assets/images/avatar3.png" alt=""></div>
+                    <div class="identity" @click="path('6721bf01-126c-4074-b5a3-94e6f1532c28')"><img src="../../assets/images/avatar4.png" alt=""></div>
                 </div>
             </div>
         </div>
@@ -40,12 +40,11 @@ export default {
     // 定义属性
     data() {
         return {
-            page_name: 'page_box'
+            page_name: 'page_box animate__animated animate__fadeIn'
         }
     },
     // 生命周期 - 创建完成（可以访问当前this实例）
     created() {
-
     },
     // 生命周期 - 挂载完成（可以访问DOM元素）
     mounted() {
@@ -58,7 +57,8 @@ export default {
     watch: {},
     // 方法集合
     methods: {
-        path() {
+        path(id) {
+            this.$store.state.role = id
             this.page_name = 'page_box animate__animated animate__bounceOut'
             setTimeout(() => {
                 this.$router.push({
@@ -78,7 +78,6 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-
 .page {
     width: 100%;
     height: 100%;
@@ -111,7 +110,7 @@ export default {
         .page_box_right {
             .title {
                 font-size: 100px;
-                font-family: 'Mooli';
+                font-family: "Mooli";
                 font-weight: 700;
                 background-image: linear-gradient(
                     to top,
