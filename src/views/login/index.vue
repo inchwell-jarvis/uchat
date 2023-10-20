@@ -2,35 +2,52 @@
     <div class='page'>
 
         <div :class="page_name">
-            <div class="page_box_left">
+            <!-- logo -->
+            <div class="page_box_left" ref="page_box_left">
                 <img src="../../assets/images/logo.png" alt="">
             </div>
+            <!-- 登录 -->
             <div class="page_box_right">
                 <p class="title">UChat</p>
                 <br>
                 <p class="start">开始你的第一次对话</p>
-                <br><br><br><br><br>
-                <p class="choose">选择身份 开始对话</p>
                 <br>
                 <div class="optionalIdentity">
-                    <div class="identity" @click="path('1d6e38ca-4c57-4b16-94c4-74a52b1c9d0d')"><img src="../../assets/images/avatar1.png" alt=""></div>
-                    <div class="identity" @click="path('cd23e6bc-6f06-4b9d-89cf-2a1c0a16a5f7')"><img src="../../assets/images/avatar2.png" alt=""></div>
-                    <div class="identity" @click="path('a4eaf508-9d5d-4b02-ae78-187c48a4b21e')"><img src="../../assets/images/avatar3.png" alt=""></div>
-                    <div class="identity" @click="path('6721bf01-126c-4074-b5a3-94e6f1532c28')"><img src="../../assets/images/avatar4.png" alt=""></div>
+                    <p class="choose">邮箱</p>
+                    <el-input v-model="Email" style="width: 320px" placeholder="请输入邮箱"></el-input>
+                    <p class="choose">密码</p>
+                    <el-input v-model="Email" style="width: 320px" placeholder="请输入密码"></el-input>
+                    <br>
+                    <p class="choose" style="width: 320px;margin-top: 20px;color: #67C23A;">
+                        <span style="cursor: pointer;" @click="Register()">注册</span>
+                        <el-button style="float: right;"  type="primary" plain>登 录</el-button>
+                    </p>
+                </div>
+            </div>
+            <!-- 注册 -->
+            <div class="page_box_register">
+                <p class="start">注册账号</p>
+                <br>
+                <div class="optionalIdentity">
+
+                    <p class="choose">邮箱</p>
+                    <el-input v-model="Email" style="width: 320px" placeholder="请输入邮箱"></el-input>
+                    <el-button>获取验证码</el-button>
+
+                    <p class="choose">验证码</p>
+                    <el-input v-model="Email" style="width: 320px" placeholder="请输入验证码"></el-input>
+                    <!-- <el-button>验证码正确</el-button> -->
+                    <p class="choose">密码</p>
+                    <el-input v-model="Email" style="width: 320px" placeholder="请输入密码"></el-input>
+                    <p class="choose">再次输入密码</p>
+                    <el-input v-model="Email" style="width: 320px" placeholder="请再次输入密码"></el-input>
+                    <br>
+                    <p class="choose" style="width: 320px;margin-top: 20px;color: #67C23A;" >
+                        <el-button style="float: right;"  type="success" plain @click="registerAccount()">注 册</el-button>
+                    </p>
                 </div>
             </div>
         </div>
-
-        <!-- <el-row>
-            <el-button>默认按钮</el-button>
-            <el-button type="primary">主要按钮</el-button>
-            <el-button type="success">成功按钮</el-button>
-            <el-button type="info">信息按钮</el-button>
-            <el-button type="warning">警告按钮</el-button>
-            <el-button type="danger">危险按钮</el-button>
-        </el-row>
-
-        <img src="../../assets/images/logo.png" alt="" style="width: 500px;"> -->
     </div>
 </template>
 
@@ -40,7 +57,8 @@ export default {
     // 定义属性
     data() {
         return {
-            page_name: 'page_box animate__animated animate__fadeIn'
+            page_name: 'page_box animate__animated animate__fadeIn',
+            Email: ''
         }
     },
     // 生命周期 - 创建完成（可以访问当前this实例）
@@ -65,6 +83,14 @@ export default {
                     path: 'home'
                 })
             }, 1000);
+        },
+        // 注册
+        Register() {
+            this.$refs.page_box_left.style.left = '500px'
+        },
+        // 注册账号
+        registerAccount(){
+            this.$refs.page_box_left.style.left = '0px'
         }
     },
     beforeCreate() { }, // 生命周期 - 创建之前
@@ -92,22 +118,33 @@ export default {
         bottom: 0;
         margin: auto;
         .page_box_left,
-        .page_box_right {
+        .page_box_right,
+        .page_box_register {
             width: 50%;
             height: 100%;
-            float: left;
             // border: 1px solid #ccc;
             box-sizing: border-box;
+            position: absolute;
+            transition: 0.6s;
         }
+
         .page_box_left {
             padding: 50px;
             box-sizing: border-box;
+            background: #ffffff;
+            left: 0;
+            top: 0;
+            z-index: 10;
             img {
                 width: 400px;
                 height: 400px;
             }
         }
-        .page_box_right {
+        .page_box_right,
+        .page_box_register {
+            left: 500px;
+            top: 0;
+            z-index: 5;
             .title {
                 font-size: 100px;
                 font-family: "Mooli";
@@ -128,10 +165,11 @@ export default {
             .choose {
                 color: rgb(56, 131, 247);
                 font-weight: bold;
+                line-height: 30px;
             }
             .optionalIdentity {
                 width: 100%;
-                height: 100px;
+                min-height: 100px;
                 .identity {
                     width: 100px;
                     height: 100px;
@@ -156,6 +194,11 @@ export default {
                     filter: grayscale(0%);
                 }
             }
+        }
+        .page_box_register {
+            left: 0;
+            top: 0;
+            z-index: 5;
         }
     }
 }
