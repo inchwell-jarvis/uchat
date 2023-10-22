@@ -8,12 +8,13 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import socket from './socket'
+import utils from './utils.js'                                        // 封装function 方法
 
 
 import store from './store/index' 
 Vue.prototype.$store = store 
 
-
+Vue.use(utils)                                 // 添加
 Vue.use(socket);
 Vue.use(ElementUI)
 Vue.config.productionTip = false

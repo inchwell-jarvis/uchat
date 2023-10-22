@@ -14,13 +14,13 @@
                 <br>
                 <div class="optionalIdentity">
                     <p class="choose">邮箱</p>
-                    <el-input v-model="Email" style="width: 320px" placeholder="请输入邮箱"></el-input>
+                    <el-input v-model="Login.email" style="width: 320px" placeholder="请输入邮箱"></el-input>
                     <p class="choose">密码</p>
-                    <el-input v-model="Email" style="width: 320px" placeholder="请输入密码"></el-input>
+                    <el-input v-model="Login.password" style="width: 320px" placeholder="请输入密码"></el-input>
                     <br>
                     <p class="choose" style="width: 320px;margin-top: 20px;color: #67C23A;">
-                        <span style="cursor: pointer;" @click="Register()">注册</span>
-                        <el-button style="float: right;"  type="primary" plain>登 录</el-button>
+                        <span style="cursor: pointer;" @click="Register_route()">注册</span>
+                        <el-button style="float: right;" type="primary" plain>登 录</el-button>
                     </p>
                 </div>
             </div>
@@ -31,19 +31,19 @@
                 <div class="optionalIdentity">
 
                     <p class="choose">邮箱</p>
-                    <el-input v-model="Email" style="width: 320px" placeholder="请输入邮箱"></el-input>
-                    <el-button>获取验证码</el-button>
+                    <el-input v-model="Register.email" style="width: 320px" placeholder="请输入邮箱"></el-input>
+                    <el-button @click="getVCode()">获取验证码</el-button>
 
                     <p class="choose">验证码</p>
-                    <el-input v-model="Email" style="width: 320px" placeholder="请输入验证码"></el-input>
+                    <el-input v-model="Register.vcode" style="width: 320px" placeholder="请输入验证码"></el-input>
                     <!-- <el-button>验证码正确</el-button> -->
                     <p class="choose">密码</p>
-                    <el-input v-model="Email" style="width: 320px" placeholder="请输入密码"></el-input>
+                    <el-input v-model="Register.password" style="width: 320px" placeholder="请输入密码"></el-input>
                     <p class="choose">再次输入密码</p>
-                    <el-input v-model="Email" style="width: 320px" placeholder="请再次输入密码"></el-input>
+                    <el-input v-model="Register.twoPassword" style="width: 320px" placeholder="请再次输入密码"></el-input>
                     <br>
-                    <p class="choose" style="width: 320px;margin-top: 20px;color: #67C23A;" >
-                        <el-button style="float: right;"  type="success" plain @click="registerAccount()">注 册</el-button>
+                    <p class="choose" style="width: 320px;margin-top: 20px;color: #67C23A;">
+                        <el-button style="float: right;" type="success" plain @click="registerAccount()">注 册</el-button>
                     </p>
                 </div>
             </div>
@@ -57,8 +57,22 @@ export default {
     // 定义属性
     data() {
         return {
+            // class
             page_name: 'page_box animate__animated animate__fadeIn',
-            Email: ''
+
+            // 登录
+            Login: {
+                email: '',
+                password: '',
+            },
+
+            // 注册
+            Register: {
+                email: '',
+                vcode: '',
+                password: '',
+                twoPassword: '',
+            }
         }
     },
     // 生命周期 - 创建完成（可以访问当前this实例）
@@ -85,13 +99,30 @@ export default {
             }, 1000);
         },
         // 注册
-        Register() {
+        Register_route() {
             this.$refs.page_box_left.style.left = '500px'
         },
         // 注册账号
-        registerAccount(){
+        registerAccount() {
             this.$refs.page_box_left.style.left = '0px'
+        },
+        // 获取验证码
+        getVCode() {
+            // 正则表达式模式用于验证邮箱格式
+            var emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+            if (emailPattern.test(this.Register.email)) {
+                // 邮箱格式正确，执行获取验证码的操作
+                console.log("邮箱格式正确，获取验证码");
+                this.API_GET('account/vcode', { name: this.Register.email })
+                    .then(rv => {
+                        console.log(rv)
+                    })
+            } else {
+                // 邮箱格式不正确，给出错误提示
+                this.$message.warning('邮箱格式不正确，请输入有效的邮箱地址');
+            }
         }
+
     },
     beforeCreate() { }, // 生命周期 - 创建之前
     beforeMount() { }, // 生命周期 - 挂载之前
