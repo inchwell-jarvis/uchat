@@ -3,11 +3,11 @@
 
         <div :class="page_name">
             <!-- logo -->
-            <div class="page_box_left" ref="page_box_left">
+            <div class="page_box_left" :style="{left:slide?'500px':'0px'}">
                 <img src="../../assets/images/logo.png" alt="">
             </div>
             <!-- 登录 -->
-            <div class="page_box_right">
+            <div class="page_box_right" :style="{left:slide?'0px':'500px',zIndex:slide?'0':'100'}">
                 <p class="title">UChat</p>
                 <br>
                 <p class="start">开始你的第一次对话</p>
@@ -19,30 +19,31 @@
                     <el-input v-model="Login.password" style="width: 320px" placeholder="请输入密码"></el-input>
                     <br>
                     <p class="choose" style="width: 320px;margin-top: 20px;color: #67C23A;">
-                        <span style="cursor: pointer;" @click="Register_route()">注册</span>
+                        <span style="cursor: pointer;" @click="Register_route(true)">注册</span>
                         <el-button style="float: right;" type="primary" plain>登 录</el-button>
                     </p>
                 </div>
             </div>
             <!-- 注册 -->
-            <div class="page_box_register">
+            <div class="page_box_register"  :style="{left:slide?'0px':'500px',zIndex:slide?'100':'0'}">
                 <p class="start">注册账号</p>
                 <br>
                 <div class="optionalIdentity">
 
-                    <p class="choose">邮箱</p>
+                    <p class="choose choose2">邮箱</p>
                     <el-input v-model="Register.email" style="width: 320px" placeholder="请输入邮箱"></el-input>
                     <el-button @click="getVCode()">获取验证码</el-button>
 
-                    <p class="choose">验证码</p>
+                    <p class="choose choose2">验证码</p>
                     <el-input v-model="Register.vcode" style="width: 320px" placeholder="请输入验证码"></el-input>
                     <!-- <el-button>验证码正确</el-button> -->
-                    <p class="choose">密码</p>
+                    <p class="choose choose2">设置密码</p>
                     <el-input v-model="Register.password" style="width: 320px" placeholder="请输入密码"></el-input>
-                    <p class="choose">再次输入密码</p>
+                    <p class="choose choose2">再次输入密码</p>
                     <el-input v-model="Register.twoPassword" style="width: 320px" placeholder="请再次输入密码"></el-input>
                     <br>
-                    <p class="choose" style="width: 320px;margin-top: 20px;color: #67C23A;">
+                    <p class="choose" style="width: 320px;margin-top: 20px;color: #3883f7;">
+                        <span style="cursor: pointer;" @click="Register_route(false)">登录</span>
                         <el-button style="float: right;" type="success" plain @click="registerAccount()">注 册</el-button>
                     </p>
                 </div>
@@ -72,7 +73,9 @@ export default {
                 vcode: '',
                 password: '',
                 twoPassword: '',
-            }
+            },
+            // 滑动
+            slide: false
         }
     },
     // 生命周期 - 创建完成（可以访问当前this实例）
@@ -99,12 +102,32 @@ export default {
             }, 1000);
         },
         // 注册
-        Register_route() {
-            this.$refs.page_box_left.style.left = '500px'
+        Register_route(bool) {
+            this.slide = bool
+            console.log(this.slide)
         },
         // 注册账号
         registerAccount() {
-            this.$refs.page_box_left.style.left = '0px'
+            // 正则表达式模式用于验证邮箱格式
+            var emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+            if (!emailPattern.test(this.Register.email)) {
+                return this.$message.warning('邮箱格式不正确，请输入有效的邮箱地址');
+            }
+            // 验证码为七位数
+            if (this.Register.vcode.length != 7) {
+                return this.$message.warning('验证码格式错误');
+            }
+            // 判断二次输入密码存在 且相同
+            if (this.Register.password == this.Register.twoPassword && this.Register.password.trim() != '') {
+                // 满足条件 进入后端
+                this.API_POST('account/register', this.Register)
+                    .then(rv => {
+                        // 注册成功应该直接返回 token 进入主页
+                        console.log(rv)
+                    })
+            } else {
+                return this.$message.error('请确认二次密码不为空且相同！');
+            }
         },
         // 获取验证码
         getVCode() {
@@ -112,10 +135,9 @@ export default {
             var emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
             if (emailPattern.test(this.Register.email)) {
                 // 邮箱格式正确，执行获取验证码的操作
-                console.log("邮箱格式正确，获取验证码");
-                this.API_GET('account/vcode', { name: this.Register.email })
+                this.API_GET('account/vcode', { email: this.Register.email })
                     .then(rv => {
-                        console.log(rv)
+                        this.$message.success('验证码发送成功，请查看邮箱！');
                     })
             } else {
                 // 邮箱格式不正确，给出错误提示
@@ -156,7 +178,9 @@ export default {
             // border: 1px solid #ccc;
             box-sizing: border-box;
             position: absolute;
-            transition: 0.6s;
+            transition: 1s;
+            overflow: hidden;
+            background: #FFFFFF;
         }
 
         .page_box_left {
@@ -165,7 +189,7 @@ export default {
             background: #ffffff;
             left: 0;
             top: 0;
-            z-index: 10;
+            z-index: 200;
             img {
                 width: 400px;
                 height: 400px;
@@ -197,6 +221,9 @@ export default {
                 color: rgb(56, 131, 247);
                 font-weight: bold;
                 line-height: 30px;
+            }
+            .choose2 {
+                color: #67c23a;
             }
             .optionalIdentity {
                 width: 100%;

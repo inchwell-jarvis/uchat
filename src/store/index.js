@@ -4,7 +4,14 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         role: '',
-        roleId:''
+        roleId: '',
+        http: 'http://localhost:1129/',
+        // http:'http://localhost:1129/',
+        Vuex: {
+            loading: false,
+            POSTLIST: [],// post 请求池
+        }
+
     },
     mutations: {},
     actions: {},
