@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
+        token:'',
         role: '',
         roleId: '',
         http: 'http://localhost:1129/',

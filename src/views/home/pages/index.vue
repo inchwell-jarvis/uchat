@@ -321,7 +321,7 @@ export default {
                     height: 50px;
                     float: left;
                     line-height: 50px;
-                    font-size: 30px;
+                    font-size: 28px;
                     padding-left: 20px;
                     box-sizing: border-box;
                 }

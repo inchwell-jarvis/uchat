@@ -51,7 +51,6 @@ export default function (head, data = {}, shake = true, firsthand = false ) {
                     }
                 }
             }
-            console.log(JSON.parse(JSON.stringify(Vuex.POSTLIST)));
         }
 
         // 要求防抖 且 防抖池包含当前接口 不予以通过

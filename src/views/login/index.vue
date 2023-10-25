@@ -20,12 +20,12 @@
                     <br>
                     <p class="choose" style="width: 320px;margin-top: 20px;color: #67C23A;">
                         <span style="cursor: pointer;" @click="Register_route(true)">注册</span>
-                        <el-button style="float: right;" type="primary" plain>登 录</el-button>
+                        <el-button style="float: right;" type="primary" plain @click="login_fun()">登 录</el-button>
                     </p>
                 </div>
             </div>
             <!-- 注册 -->
-            <div class="page_box_register"  :style="{left:slide?'0px':'500px',zIndex:slide?'100':'0'}">
+            <div class="page_box_register" :style="{left:slide?'0px':'500px',zIndex:slide?'100':'0'}">
                 <p class="start">注册账号</p>
                 <br>
                 <div class="optionalIdentity">
@@ -63,13 +63,13 @@ export default {
 
             // 登录
             Login: {
-                email: '',
-                password: '',
+                email: '2237928292@qq.com',
+                password: 'zhaohongfei',
             },
 
             // 注册
             Register: {
-                email: '',
+                email: '2237928292@qq.com',
                 vcode: '',
                 password: '',
                 twoPassword: '',
@@ -92,8 +92,27 @@ export default {
     watch: {},
     // 方法集合
     methods: {
-        path(id) {
-            this.$store.state.role = id
+        // 登录
+        login_fun() {
+            // 正则表达式模式用于验证邮箱格式
+            var emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+            if (!emailPattern.test(this.Login.email)) {
+                return this.$message.warning('邮箱格式不正确，请输入有效的邮箱地址！');
+            }
+            if(this.Login.password.trim() == ''){
+                return this.$message.warning('请输入密码！');
+            }
+            // 满足条件 进入后端
+            this.API_POST('account/login', this.Login)
+                .then(rv => {
+                    // 注册成功应该直接返回 token 进入主页
+                    console.log(rv)
+                    this.path()
+                })
+        },
+        // 前往主页
+        path(token) {
+            this.$store.state.token = token
             this.page_name = 'page_box animate__animated animate__bounceOut'
             setTimeout(() => {
                 this.$router.push({
@@ -124,11 +143,14 @@ export default {
                     .then(rv => {
                         // 注册成功应该直接返回 token 进入主页
                         console.log(rv)
+                        this.$message.success('注册成功！正在前往主页！');
+                        this.path()
                     })
             } else {
                 return this.$message.error('请确认二次密码不为空且相同！');
             }
         },
+
         // 获取验证码
         getVCode() {
             // 正则表达式模式用于验证邮箱格式
@@ -180,7 +202,7 @@ export default {
             position: absolute;
             transition: 1s;
             overflow: hidden;
-            background: #FFFFFF;
+            background: #ffffff;
         }
 
         .page_box_left {
