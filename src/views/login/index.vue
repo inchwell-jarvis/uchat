@@ -64,7 +64,7 @@ export default {
             // 登录
             Login: {
                 email: '2237928292@qq.com',
-                password: 'zhaohongfei',
+                password: 'anxuan',
             },
 
             // 注册
@@ -80,6 +80,7 @@ export default {
     },
     // 生命周期 - 创建完成（可以访问当前this实例）
     created() {
+        // this.CookieManager('del','token')
     },
     // 生命周期 - 挂载完成（可以访问DOM元素）
     mounted() {
@@ -99,7 +100,7 @@ export default {
             if (!emailPattern.test(this.Login.email)) {
                 return this.$message.warning('邮箱格式不正确，请输入有效的邮箱地址！');
             }
-            if(this.Login.password.trim() == ''){
+            if (this.Login.password.trim() == '') {
                 return this.$message.warning('请输入密码！');
             }
             // 满足条件 进入后端
@@ -107,12 +108,12 @@ export default {
                 .then(rv => {
                     // 注册成功应该直接返回 token 进入主页
                     console.log(rv)
-                    this.path()
+                    this.path(rv.data.token)
                 })
         },
         // 前往主页
         path(token) {
-            this.$store.state.token = token
+            this.CookieManager('set', 'token', token, 7)
             this.page_name = 'page_box animate__animated animate__bounceOut'
             setTimeout(() => {
                 this.$router.push({

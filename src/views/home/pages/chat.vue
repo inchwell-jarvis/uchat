@@ -1,7 +1,6 @@
 <template>
     <div class='chat'>
-        <!-- 头像 -->
-        <div class="avatar"></div>
+  
 
         <div class="chat_home">
             <div class="chat_content" ref="scrollContainer">
@@ -117,22 +116,6 @@ export default {
     width: 100%;
     height: 100%;
     position: relative;
-
-    .avatar {
-        width: 300px;
-        height: 70px;
-        position: absolute;
-        border: 1px solid #ccc;
-        background: #ffffff;
-        top: 0;
-        right: -230px;
-        cursor: pointer;
-        transition: 0.4s;
-        box-sizing: border-box;
-    }
-    .avatar:hover {
-        right: 0px;
-    }
     .chat_home {
         width: 1200px;
         height: 100%;

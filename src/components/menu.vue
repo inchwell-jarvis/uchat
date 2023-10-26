@@ -3,7 +3,7 @@
         <!-- 头部LOGO -->
         <div class="logo">
             <!-- logo -->
-            <img src="../../assets/images/logo.png" alt="">
+            <img src="../assets/images/logo.png" alt="">
             <!--  -->
             <div>
                 UChat
@@ -21,7 +21,7 @@
         <div class="menu_list exit">
             <!--  -->
             <div class="menu_li" @click="headleMenu(exit[0],99)">
-                <img :src="exit[0].start_icon" alt="" >
+                <img :src="exit[0].start_icon" alt="">
                 <div class="text">{{ exit[0].name }}</div>
             </div>
         </div>
@@ -38,43 +38,50 @@ export default {
                 {
                     name: '主页',
                     path: '/index',
-                    start_icon: require('../../assets/menu/settings-start.png'),
-                    close_icon: require('../../assets/menu/settings-close.png'),
+                    start_icon: require('../assets/menu/settings-start.png'),
+                    close_icon: require('../assets/menu/settings-close.png'),
                 }
                 ,
                 {
-                    name: '沟通',
+                    name: '交流',
                     path: '/chat',
-                    start_icon: require('../../assets/menu/message-start.png'),
-                    close_icon: require('../../assets/menu/message-close.png'),
+                    start_icon: require('../assets/menu/message-start.png'),
+                    close_icon: require('../assets/menu/message-close.png'),
                 }
                 ,
                 {
-                    name: '应用',
+                    name: '功能',
                     path: '/app',
-                    start_icon: require('../../assets/menu/app-start.png'),
-                    close_icon: require('../../assets/menu/app-close.png'),
+                    start_icon: require('../assets/menu/app-start.png'),
+                    close_icon: require('../assets/menu/app-close.png'),
                 }
                 ,
                 {
                     name: '接口',
                     path: '/api',
-                    start_icon: require('../../assets/menu/api-start.png'),
-                    close_icon: require('../../assets/menu/api-close.png'),
+                    start_icon: require('../assets/menu/api-start.png'),
+                    close_icon: require('../assets/menu/api-close.png'),
                 }
                 ,
                 {
                     name: '权限',
                     path: '/permission',
-                    start_icon: require('../../assets/menu/permission-start.png'),
-                    close_icon: require('../../assets/menu/permission-close.png'),
+                    start_icon: require('../assets/menu/permission-start.png'),
+                    close_icon: require('../assets/menu/permission-close.png'),
+                }
+                ,
+                {
+                    name: '我的',
+                    path: '/me',
+                    start_icon: require('../assets/menu/me-start.png'),
+                    close_icon: require('../assets/menu/me-close.png'),
                 }
             ],
             exit: [
                 {
                     name: '退出',
                     path: '/',
-                    start_icon: require('../../assets/menu/exit-start.png')
+                    start_icon: require('../assets/menu/exit-start.png')
                 }
             ],
             menu_index: 0
@@ -83,7 +90,9 @@ export default {
     // 生命周期 - 创建完成（可以访问当前this实例）
     created() {
 
+
     },
+
     // 生命周期 - 挂载完成（可以访问DOM元素）
     mounted() {
 
@@ -92,11 +101,15 @@ export default {
     computed: {
     },
     // 监控data中的数据变化
-    watch: {},
+    watch: {
+        $route(to) {
+            console.log(to.path)
+            this.menu_index = this.menu.findIndex(item => item.path === to.path)
+        },
+    },
     // 方法集合
     methods: {
         headleMenu(item, index) {
-            console.log(item)
             this.menu_index = index
             this.$router.push({
                 path: item.path

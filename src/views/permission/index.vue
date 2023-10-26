@@ -1,25 +1,10 @@
 <template>
-    <div class='app'>
-        <div class="app_box">
+    <div class='permission'>
+        <div class="permission_box">
 
-            <h2>接口</h2>
+            <h2>写点啥呢！</h2>
 
-            <div class="platform">
-                <div class="platform_li"></div>
-                <div class="platform_li"></div>
-                <div class="platform_li"></div>
-                <div class="platform_li"></div>
-                <div class="platform_li"></div>
-                <div class="platform_li"></div>
-                <div class="platform_li"></div>
-                <div class="platform_li"></div>
-            </div>
 
-            <h2>生成</h2>
-
-            <h2>编码加密</h2>
-
-            <h2>其他</h2>
 
         </div>
     </div>
@@ -62,36 +47,20 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.app {
+.permission {
     width: 100%;
     height: 100%;
-    .app_box {
+    .permission_box{
         width: 1200px;
         height: 100%;
+        background: #ffffff;
         margin: auto;
+        padding: 0 20px;
+        box-sizing: border-box;
         h2 {
             line-height: 100px;
         }
 
-        .platform {
-            width: 100%;
-            min-height: 100px;
-            float: left;
-            .platform_li {
-                width: 280px;
-                height: 200px;
-                background: #ffffff;
-                border-radius: 10px;
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-                float: left;
-                margin: 0 20px 20px 0;
-                cursor: pointer;
-                transition: 0.4s;
-            }
-            .platform_li:hover{
-                box-shadow: 0 6px 18px 0 rgba(0, 0, 0, 0.1);
-            }
-        }
     }
 }
 </style>

@@ -1,6 +1,6 @@
 import API_POST from './utils/API_POST'                                 // 封装的 POST 请求
 import API_GET from './utils/API_GET'                                   // 封装的 GET  请求
-
+import CookieManager from './utils/CookieManager'                       // 封装的Cookie 管理器
 export default {
     install(Vue, options) {
         // 简化接口  GET
@@ -8,5 +8,8 @@ export default {
 
         // 统一 POST 接口 防抖
         Vue.prototype.API_POST = API_POST
+        
+        // 封装的Cookie 管理器
+        Vue.prototype.CookieManager = CookieManager
     }
 };
