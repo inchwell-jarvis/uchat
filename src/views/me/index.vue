@@ -93,8 +93,9 @@ export default {
                 reader.readAsDataURL(file.raw);
                 reader.onload = async function (e) {
                     // 压缩 base64 编码 至 指定大小
-                    let rv = await me.resizeImageToSize(reader.result, 200)
-                    console.log(rv)
+                    // let rv2 = await me.resizeImageToSize2(reader.result, 300)
+                    let rv2 = await me.calculateDynamicCompression(reader.result, 1000)
+                    console.log(rv2)
                 };
             } else {
                 me.$message.error("暂仅支持 jpeg jpg png 格式图片!");
@@ -102,41 +103,228 @@ export default {
         },
 
 
-        // 压缩base64位编码 至指定大小  并返回压缩耗时
-        async resizeImageToSize(base64Image, targetSizeKB) {
-            const img = new Image();
-            img.src = base64Image;
+        // 不保留原图大小 压缩图片 速度很快 90ms+-   结果大小不可控
+        async resizeImageToSize2(base64Image, targetSizeKB) {
+            const startTime = Date.now();
 
             return new Promise((resolve, reject) => {
-                const startTime = Date.now();
+                const img = new Image();
+                img.src = base64Image;
+
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     const maxSizeBytes = targetSizeKB * 1024;
+                    const originalSizeBytes = base64Image.length * 3 / 4;
 
-                    let quality = 0.7; // 初始 JPEG 质量
+                    const maxWidth = 800;
+                    const maxHeight = 600;
+                    if (img.width > maxWidth || img.height > maxHeight) {
+                        const aspectRatio = img.width / img.height;
+                        if (aspectRatio > maxWidth / maxHeight) {
+                            img.width = maxWidth;
+                            img.height = maxWidth / aspectRatio;
+                        } else {
+                            img.height = maxHeight;
+                            img.width = maxHeight * aspectRatio;
+                        }
+                    }
+
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                    let quality = 0.9;
                     let dataURL = '';
 
                     do {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(img, 0, 0);
-
                         dataURL = canvas.toDataURL('image/jpeg', quality);
-
-                        quality -= 0.02;
+                        quality -= 0.01;
                     } while (dataURL.length > maxSizeBytes && quality > 0);
 
-                    const endTime = Date.now();
-                    const compressionTime = endTime - startTime; // 压缩耗时
+                    const newSizeBytes = dataURL.length * 3 / 4;
 
-                    resolve({ compressedImage: dataURL, compressionTime: compressionTime });
+                    const endTime = Date.now();
+                    const compressionTime = (endTime - startTime) + ' ms';
+
+                    resolve({
+                        compressedImage: dataURL,
+                        compressionTime: compressionTime,
+                        newSize: `${newSizeBytes} bytes = ${(newSizeBytes / 1024).toFixed(2)} KB = ${(newSizeBytes / 1024 / 1024).toFixed(2)} MB`,
+                        oldSize: `${originalSizeBytes} bytes = ${(originalSizeBytes / 1024).toFixed(2)} KB = ${(originalSizeBytes / 1024 / 1024).toFixed(2)} MB`,
+                    });
+                };
+
+                img.onerror = () => reject('无法加载图像');
+            });
+        },
+
+
+        // 压缩图片 保留原图大小 计算压缩比例
+        async resizeImageToSize3(base64Image, targetSizeKB) {
+            // 记录开始毫秒数
+            const startTime = Date.now();
+            // 返回Promise
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = base64Image;
+                // 原图大小
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    // 转为 要求的 bytes 大小
+                    const maxSizeBytes = targetSizeKB * 1024;
+                    // 转为 原图的 bytes大小
+                    const originalSizeBytes = base64Image.length * 3 / 4;
+                    // 保持原图大小
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                    // 计算压缩比例
+                    let quality = maxSizeBytes / originalSizeBytes;
+
+                    console.log(quality)
+
+                    // 循环压缩 直到压缩到目标大小
+                    let dataURL;
+                    do {
+                        dataURL = canvas.toDataURL('image/jpeg', quality);
+                        quality -= 0.01;
+                        console.log(dataURL.length / 1024);
+                        console.log('--' + quality)
+                    } while (dataURL.length > maxSizeBytes && quality > 0);
+
+
+
+                    // 转为 新图的 bytes 大小
+                    const newSizeBytes = dataURL.length * 3 / 4;
+                    // 记录结束毫秒数
+                    const endTime = Date.now();
+                    // 计算压缩耗时
+                    const compressionTime = (endTime - startTime) + ' ms';
+                    // 返回数据
+                    resolve({
+                        compressedImage: dataURL,
+                        compressionTime: compressionTime,
+                        newSize: `${newSizeBytes} bytes = ${(newSizeBytes / 1024).toFixed(2)} KB = ${(newSizeBytes / 1024 / 1024).toFixed(2)} MB`,
+                        oldSize: `${originalSizeBytes} bytes = ${(originalSizeBytes / 1024).toFixed(2)} KB = ${(originalSizeBytes / 1024 / 1024).toFixed(2)} MB`,
+                    });
+                };
+                // 失败回调
+                img.onerror = () => reject('无法加载图像');
+            });
+        },
+
+
+
+        // 在不改变原图大小 的前提下 压缩图片以接近设置的预期值 
+        async resizeImageToSize4(base64Image, targetSizeKB) {
+            const startTime = Date.now();
+
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = base64Image;
+
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                    let quality = 0.9;
+                    let dataURL = '';
+                    const maxSizeBytes = targetSizeKB * 1024;
+
+                    do {
+                        dataURL = canvas.toDataURL('image/jpeg', quality);
+                        quality -= 0.01;
+                    } while (dataURL.length > maxSizeBytes && quality > 0);
+
+                    const newSizeBytes = dataURL.length * 3 / 4;
+
+                    const endTime = Date.now();
+                    const compressionTime = (endTime - startTime) + ' ms';
+
+                    resolve({
+                        compressedImage: dataURL,
+                        compressionTime: compressionTime,
+                        newSize: `${newSizeBytes} bytes = ${(newSizeBytes / 1024).toFixed(2)} KB = ${(newSizeBytes / 1024 / 1024).toFixed(2)} MB`,
+                        oldSize: `${base64Image.length} bytes = ${(base64Image.length / 1024).toFixed(2)} KB = ${(base64Image.length / 1024 / 1024).toFixed(2)} MB`,
+                    });
+                };
+
+                img.onerror = () => reject('无法加载图像');
+            });
+        },
+
+
+
+        // 保留原图大小 输出大小接近输入要求
+        async calculateDynamicCompression(base64Image, targetSizeKB) {
+            // 记录开始毫秒数
+            const startTime = Date.now();
+
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = base64Image;
+
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    const maxSizeBytes = targetSizeKB * 1024;
+                    const originalSizeBytes = base64Image.length * 3 / 4;
+
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                    // 设置一个初始质量值，可以根据实际需求进行调整
+                    let quality = 0.9;
+                    let dataURL;
+                    let newSizeBytes;
+
+                    do {
+                        dataURL = canvas.toDataURL('image/jpeg', quality);
+                        console.log( '------' + quality)
+
+                        // 计算实际压缩后的大小
+                        newSizeBytes = dataURL.length;
+
+                        // 根据实际大小调整质量
+                        if (newSizeBytes > maxSizeBytes) {
+                            quality *= maxSizeBytes / newSizeBytes;
+                        } else {
+                            quality += 0.01;
+                        }
+                        console.log( '------' + newSizeBytes/1024 + ' KB')
+                    } while (newSizeBytes > maxSizeBytes && quality > 0);
+
+                    const endTime = Date.now();
+                    const compressionTime = (endTime - startTime) + ' ms';
+
+                    resolve({
+                        compressedImage: dataURL,
+                        compressionTime: compressionTime,
+                        newSize: `${newSizeBytes} bytes = ${(newSizeBytes / 1024).toFixed(2)} KB = ${(newSizeBytes / 1024 / 1024).toFixed(2)} MB`,
+                        oldSize: `${originalSizeBytes} bytes = ${(originalSizeBytes / 1024).toFixed(2)} KB = ${(originalSizeBytes / 1024 / 1024).toFixed(2)} MB`,
+                    });
                 };
 
                 img.onerror = () => reject('无法加载图像');
             });
         }
+
+
+
+
+
+
+
+
 
     },
     beforeCreate() { }, // 生命周期 - 创建之前
