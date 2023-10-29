@@ -1,8 +1,10 @@
 <template>
     <div class='app'>
         <div class="app_box">
-            <h2>图片</h2>
             <h2>二维码</h2>
+            
+            <h2>图片</h2>
+            
             <h2>接口测试</h2>
         </div>
     </div>

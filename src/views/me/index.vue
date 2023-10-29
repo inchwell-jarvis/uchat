@@ -1,6 +1,11 @@
 <template>
     <div class='me'>
         <div class="me_box">
+            <!-- 弹窗 -->
+            <el-dialog title="提示" :visible.sync="dialogVisible" :append-to-body="true" width="50%">
+                <span>这是一段信息</span>
+               
+            </el-dialog>
 
             <h2>个人中心</h2>
 
@@ -24,8 +29,8 @@
                     <!-- 名称 -->
                     <div class="initName">
                         <span>赵鸿飞</span>
-                        <span class="initNameEdit">
-                            <i class="el-icon-edit"></i>
+                        <span class="initNameEdit" @click="dialogVisible = true">
+                            <i class="el-icon-edit color-primary"></i>
                         </span>
                     </div>
                     <!-- 签名 -->
@@ -65,7 +70,8 @@ export default {
     data() {
         return {
             base64: '',
-            fileList: []
+            fileList: [],
+            dialogVisible:false,
         }
     },
     // 生命周期 - 创建完成（可以访问当前this实例）
@@ -94,7 +100,7 @@ export default {
                 reader.onload = async function (e) {
                     // 压缩 base64 编码 至 指定大小
                     // let rv2 = await me.resizeImageToSize2(reader.result, 300)
-                    let rv2 = await me.calculateDynamicCompression(reader.result, 1000)
+                    let rv2 = await me.calculateDynamicCompression(reader.result, 200)
                     console.log(rv2)
                 };
             } else {
@@ -289,7 +295,7 @@ export default {
 
                     do {
                         dataURL = canvas.toDataURL('image/jpeg', quality);
-                        console.log( '------' + quality)
+                        console.log('------' + quality)
 
                         // 计算实际压缩后的大小
                         newSizeBytes = dataURL.length;
@@ -300,7 +306,7 @@ export default {
                         } else {
                             quality += 0.01;
                         }
-                        console.log( '------' + newSizeBytes/1024 + ' KB')
+                        console.log('------' + newSizeBytes / 1024 + ' KB')
                     } while (newSizeBytes > maxSizeBytes && quality > 0);
 
                     const endTime = Date.now();
@@ -426,14 +432,9 @@ export default {
                         opacity: 0;
                         transition: all 0.3s;
                         cursor: pointer;
-                        color: #909399;
                     }
                 }
-                .initName:hover {
-                    .initNameEdit {
-                        opacity: 1;
-                    }
-                }
+
                 .signature {
                     width: 100%;
                     height: 80px;
@@ -447,6 +448,11 @@ export default {
                     -webkit-box-orient: vertical;
                     overflow: hidden;
                     font-family: "YouYuan";
+                }
+            }
+            .init:hover {
+                .initNameEdit {
+                    opacity: 1;
                 }
             }
         }

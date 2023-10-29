@@ -7,6 +7,7 @@ import './assets/css/animate.min.css'
 import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import './assets/style/theme/index.css'
 import socket from './socket'
 import utils from './utils.js'                                        // 封装function 方法
 
